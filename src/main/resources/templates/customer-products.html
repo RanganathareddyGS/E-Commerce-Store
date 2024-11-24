@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Customer Products</title>
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+	rel="stylesheet" />
+<link
+	href="https://fonts.googleapis.com/css2?family=Choco+Cooky&display=swap"
+	rel="stylesheet" />
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
+<style>
+:root {
+	--primary-color: #4caf50;
+	--secondary-color: #2196f3;
+	--accent-color: #ff9800;
+}
+
+body {
+	font-family: "Choco Cooky", cursive;
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+	background-color: #f5f5f5;
+}
+
+.navbar {
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+	font-weight: bold;
+	font-size: 1.8rem;
+	color: var(--primary-color) !important;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+}
+
+.nav-link {
+	font-weight: 500;
+	transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+	color: var(--primary-color) !important;
+}
+
+.alert {
+	border-radius: 8px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+main {
+	flex: 1 0 auto;
+}
+
+.btn-primary {
+	background-color: var(--accent-color);
+	border: none;
+	padding: 0.8rem 2rem;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	transition: transform 0.3s ease, box-shadow 0.3s ease;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	cursor: pointer;
+}
+
+.btn-primary:hover {
+	background-color: #f57c00;
+	transform: translateY(-2px);
+	box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.product-card {
+	transition: transform 0.2s;
+	margin-bottom: 15px;
+	height: 500px;
+}
+
+.product-card:hover {
+	transform: translateY(-5px);
+}
+
+.product-image {
+	width: 100%;
+	height: 200px;
+	object-fit: contain;
+}
+
+.btn-success {
+	background-color: var(--primary-color);
+	border: none;
+}
+
+.btn-danger {
+	background-color: #f44336;
+	border: none;
+}
+
+.btn-secondary {
+	background-color: var(--secondary-color);
+	border: none;
+	padding: 0.8rem 2rem;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	transition: transform 0.3s ease, box-shadow 0.3s ease;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-secondary:hover {
+	background-color: #1976d2;
+	transform: translateY(-2px);
+	box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.footer {
+	background-color: #1a1a1a;
+	color: #ffffff;
+	padding: 2rem 0;
+	margin-top: auto;
+}
+</style>
+</head>
+<body>
+	<header>
+		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+			<div class="container">
+				<a class="navbar-brand" href="/customer/home"><i
+					class="bi bi-shop me-2"></i>Customer Dashboard</a>
+				<button class="navbar-toggler" type="button"
+					data-bs-toggle="collapse" data-bs-target="#navbarNav"
+					aria-controls="navbarNav" aria-expanded="false"
+					aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarNav">
+					<ul class="navbar-nav ms-auto">
+						<li class="nav-item"><a class="nav-link"
+							href="/customer/products"><i class="bi bi-grid me-1"></i>View
+								Products</a></li>
+						<li class="nav-item"><a class="nav-link" href="/customer/cart"><i
+								class="bi bi-cart me-1"></i>View Cart</a></li>
+						<li class="nav-item"><a class="nav-link" href="/customer/orders"><i
+								class="bi bi-clock-history me-1"></i>Previous Orders</a></li>
+						<li class="nav-item"><a class="nav-link" href="/logout"><i
+								class="bi bi-box-arrow-right me-1"></i>Logout</a></li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+	</header>
+
+	<main>
+		<div class="container mt-4"
+			th:if="${session.failure!=null || session.success!=null}">
+			<div class="alert alert-danger alert-dismissible fade show"
+				th:if="${session.failure}" role="alert">
+				<span th:text="${session.failure}"></span>
+				<button type="button" class="btn-close" data-bs-dismiss="alert"
+					aria-label="Close"></button>
+			</div>
+			<div class="alert alert-success alert-dismissible fade show"
+				th:if="${session.success}" role="alert">
+				<span th:text="${session.success}"></span>
+				<button type="button" class="btn-close" data-bs-dismiss="alert"
+					aria-label="Close"></button>
+			</div>
+			<div th:text="${@sessionMessageRemover.removeMessage()}"></div>
+		</div>
+
+		<div class="container mt-4">
+			<div class="row">
+				<div class="col-md-4" th:each="product:${products}">
+					<div class="card product-card shadow">
+						<img class="card-img-top product-image"
+							th:src="${product.imageLink}" th:alt="${product.name}" />
+						<div class="card-body">
+							<h5 th:text="${product.name}"></h5>
+							<p th:text="${product.description}"></p>
+							<div
+								class="d-flex justify-content-between align-items-center mb-3">
+								<span class="badge bg-primary" th:text="${product.category}"></span>
+								<span class="fw-bold" th:text="'₹' + ${product.price}"></span>
+							</div>
+							<p>
+								<small class="text-muted" th:text="'Stock: ' + ${product.stock}"></small>
+							</p>
+							<div class="d-flex justify-content-between align-items-center">
+								<a th:href="'/customer/cart-remove/'+${product.id}"><button
+										class="btn btn-danger btn-sm">-</button></a>
+
+								<span th:text="${product.getQuantity(items)}"></span>
+							
+								<a th:href="'/customer/cart-add/'+${product.id}"><button
+										class="btn btn-success btn-sm">+</button></a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="d-flex justify-content-end mt-3">
+				<a href="/customer/cart" class="btn btn-primary">
+					<i class="bi bi-cart"></i> View Cart
+				</a>
+			</div>
+
+			<div class="mt-3">
+				<a href="/customer/home" class="btn btn-secondary">Back</a>
+			</div>
+		</div>
+	</main>
+
+	<footer class="footer text-center">
+		<div class="container">
+			<p>
+				<i class="bi bi-c-circle me-1"></i>2024 Ecommerce Store. All rights
+				reserved.
+			</p>
+		</div>
+	</footer>
+
+	<script>
+		document.addEventListener("DOMContentLoaded", function() {
+			setTimeout(function() {
+				var alerts = document.querySelectorAll(".alert");
+				alerts.forEach(function(alert) {
+					var bsAlert = new bootstrap.Alert(alert);
+					bsAlert.close();
+				});
+			}, 2000);
+		});
+	</script>
+
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
