@@ -36,7 +36,7 @@ public class Product {
 	@Min(value = 1, message = "* Should be atleast One")
 	@Max(value = 30, message = "* Maximum 30 is allowed")
 	private int stock;
-	@Size(min = 15, max = 100, message = "* Enter between 15~100 charecters")
+	@Size(min = 15, max = 500, message = "* Enter between 15~500 charecters")
 	private String description;
 	private String imageLink;
 	@NotEmpty(message = "* Enter Something")
